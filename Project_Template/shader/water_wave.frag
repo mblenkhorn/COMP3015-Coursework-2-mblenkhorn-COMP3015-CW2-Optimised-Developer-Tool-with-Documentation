@@ -2,24 +2,25 @@
 
 
 uniform struct LightInfo {
-    vec4 Position;
-    vec3 Intensity;
+    vec4 Position; //the light's position
+    vec3 Intensity; //how bright the light will be
 } Light;
 
 uniform struct MaterialInfo {
-    vec3 Ka;
-    vec3 Kd;
-    vec3 Ks;
-    float Shininess;
+    vec3 Ka; //ambient reflectivity
+    vec3 Kd; //diffuse reflectivity
+    vec3 Ks; //specular reflectivity
+    float Shininess; //how shiny the material will look
 } Material;
 
 in vec4 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform float Time;
+uniform float Time; //the Time variable for the vertices on the water_wave vertex shader
 
 layout ( location = 0 ) out vec4 FragColor;
+
 
 vec3 phongModel(vec3 kd) {
     vec3 n = Normal;
