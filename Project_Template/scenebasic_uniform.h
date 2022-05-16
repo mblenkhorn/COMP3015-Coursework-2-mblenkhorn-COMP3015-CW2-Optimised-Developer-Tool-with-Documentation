@@ -15,14 +15,14 @@ class SceneBasic_Uniform : public Scene
 {
 private:
    
-    GLSLProgram prog, solidProg;
+    GLSLProgram prog, solidProg, waveProg;
 
     GLuint shadowFBO, passOneIndex, passTwoIndex;
     Plane plane;
     std::unique_ptr<ObjMesh> mesh;
     Frustum lightFrustum;
     int shadowMapWidth, shadowMapHeight;
-    float tPrev, angle;
+    float tPrev, angle, time;
 
     glm::mat4 lightPV, shadowScale;
     glm::vec3 lightPos;
@@ -52,6 +52,11 @@ public:
     void setShadowMatrices();
     void setFBO();
     void drawBuildingScene();
+
+    //Waves
+    void drawWaves();
+    void setWaveMatrices();
+    void renderWaves();
 };
 
 #endif // SCENEBASIC_UNIFORM_H
