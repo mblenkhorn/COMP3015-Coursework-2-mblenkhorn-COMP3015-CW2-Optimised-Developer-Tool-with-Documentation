@@ -6,5 +6,5 @@ uniform mat4 frustumMVP;
 
 void main()
 {
-    gl_Position = frustumMVP * vec4(VertexPosition, 1.0);
+    gl_Position = frustumMVP * vec4(VertexPosition, 1.0); //multiplies the MVP by the vertex position and stores it in gl_Position
 }
