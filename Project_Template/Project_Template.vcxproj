@@ -146,10 +146,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="helper\cube.cpp" />
     <ClCompile Include="helper\frustum.cpp" />
     <ClCompile Include="helper\glslprogram.cpp" />
     <ClCompile Include="helper\glutils.cpp" />
     <ClCompile Include="helper\noisetex.cpp" />
+    <ClCompile Include="helper\objmesh.cpp" />
     <ClCompile Include="helper\plane.cpp" />
     <ClCompile Include="helper\sphere.cpp" />
     <ClCompile Include="helper\trianglemesh.cpp" />
@@ -157,21 +159,22 @@
     <ClCompile Include="scenebasic_uniform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\basic_uniform.frag" />
-    <None Include="shader\basic_uniform.vert" />
-    <None Include="shader\LightFrustum.frag" />
-    <None Include="shader\LightFrustum.vert" />
-    <None Include="shader\NightVision.frag" />
-    <None Include="shader\NightVision.vert" />
-    <None Include="shader\Shadow_Map.frag" />
-    <None Include="shader\Shadow_Map.vert" />
+    <None Include="shader\frustrum.frag" />
+    <None Include="shader\frustum.vert" />
+    <None Include="shader\pcf.frag" />
+    <None Include="shader\pcf.vert" />
+    <None Include="shader\water_wave.frag" />
+    <None Include="shader\water_wave.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helper\aabb.h" />
+    <ClInclude Include="helper\cube.h" />
     <ClInclude Include="helper\drawable.h" />
     <ClInclude Include="helper\frustum.h" />
     <ClInclude Include="helper\glslprogram.h" />
     <ClInclude Include="helper\glutils.h" />
     <ClInclude Include="helper\noisetex.h" />
+    <ClInclude Include="helper\objmesh.h" />
     <ClInclude Include="helper\plane.h" />
     <ClInclude Include="helper\scene.h" />
     <ClInclude Include="helper\scenerunner.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="helper\stb\stb_image.h" />
     <ClInclude Include="helper\stb\stb_image_write.h" />
     <ClInclude Include="helper\trianglemesh.h" />
+    <ClInclude Include="helper\utils.h" />
     <ClInclude Include="scenebasic_uniform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

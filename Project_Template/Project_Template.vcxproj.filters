@@ -57,30 +57,30 @@
     <ClCompile Include="helper\noisetex.cpp">
       <Filter>helper</Filter>
     </ClCompile>
+    <ClCompile Include="helper\cube.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
+    <ClCompile Include="helper\objmesh.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\basic_uniform.frag">
+    <None Include="shader\pcf.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\basic_uniform.vert">
+    <None Include="shader\pcf.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\Shadow_Map.frag">
+    <None Include="shader\frustrum.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\Shadow_Map.vert">
+    <None Include="shader\frustum.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\LightFrustum.frag">
+    <None Include="shader\water_wave.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\LightFrustum.vert">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="shader\NightVision.frag">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="shader\NightVision.vert">
+    <None Include="shader\water_wave.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -122,6 +122,18 @@
       <Filter>helper</Filter>
     </ClInclude>
     <ClInclude Include="helper\noisetex.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\cube.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\objmesh.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\aabb.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\utils.h">
       <Filter>helper</Filter>
     </ClInclude>
   </ItemGroup>
