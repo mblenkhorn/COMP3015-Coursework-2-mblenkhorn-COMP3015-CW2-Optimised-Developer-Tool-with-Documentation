@@ -117,11 +117,29 @@ private:
     }
 
     void mainLoop(GLFWwindow * window, Scene & scene) {
-        while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
+        while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) 
+        {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 			
+            if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) 
+            {
+                glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+                scene.render(0);
+            }
+            else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) 
+            {
+                glClearColor(0.0f, 1.0f, 1.0f, 0.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+                scene.render(1);
+            }
+            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+            {
+                glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
+            }
+
             scene.update(float(glfwGetTime()));
-            scene.render();
             glfwSwapBuffers(window);
 
             glfwPollEvents();

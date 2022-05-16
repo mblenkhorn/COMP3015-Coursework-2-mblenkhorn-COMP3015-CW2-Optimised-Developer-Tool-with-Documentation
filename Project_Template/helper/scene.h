@@ -33,7 +33,7 @@ public:
     /**
       Draw your scene.
       */
-    virtual void render() = 0;
+    virtual void render(int index) = 0;
 
     /**
       Called when screen is resized
