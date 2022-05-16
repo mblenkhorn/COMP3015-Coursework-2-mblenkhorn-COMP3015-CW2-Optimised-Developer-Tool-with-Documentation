@@ -277,12 +277,12 @@ void SceneBasic_Uniform::drawWaves()
 void SceneBasic_Uniform::renderWaves()
 {
     waveProg.use();
-    waveProg.setUniform("Time", time);
+    waveProg.setUniform("waveTime", time);
 
-    prog.setUniform("Material.Kd", 0.0f, 0.0f, 1.0f);
-    prog.setUniform("Material.Ks", 0.8f, 0.8f, 0.8f);
-    prog.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
-    prog.setUniform("Material.Shininess", 100.0f);
+    waveProg.setUniform("Material.Kd", 0.0f, 0.0f, 1.0f);
+    waveProg.setUniform("Material.Ks", 0.8f, 0.8f, 0.8f);
+    waveProg.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+    waveProg.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
     model = glm::translate(mat4(1.0f), vec3(0.0f, -1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-10.0f), vec3(0.0f, 0.0f, 1.0f));
