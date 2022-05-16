@@ -2,6 +2,9 @@
 #define SCENEBASIC_UNIFORM_H
 
 #include "helper/scene.h"
+#include "helper/sphere.h"
+#include "helper/plane.h";
+#include "helper/frustum.h";
 
 #include <glad/glad.h>
 #include "helper/glslprogram.h"
@@ -9,9 +12,17 @@
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLuint vaoHandle;
     GLSLProgram prog;
-    float angle;
+    Sphere sphere;
+    Plane plane;
+
+    Frustum lightFrustum;
+
+    float tPrev, angle;
+
+    int shadowMapWidth, shadowMapHeight;
+
+    glm::mat4 lightPV, shadowBias;
 
     void compile();
 
@@ -20,7 +31,7 @@ public:
 
     void initScene();
     void update( float t );
-    void render();
+    void render(int);
     void resize(int, int);
 };
 
