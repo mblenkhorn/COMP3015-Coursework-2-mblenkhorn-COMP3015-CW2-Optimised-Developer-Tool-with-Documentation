@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-	SceneRunner runner("Shader_Basics");
+	SceneRunner runner("COMP3015 Coursework 2");
 
 	std::unique_ptr<Scene> scene;
 
