@@ -51,10 +51,11 @@ https://github.com/PacktPublishing/OpenGL-4-Shading-Language-Cookbook-Third-Edit
 
 https://github.com/PacktPublishing/OpenGL-4-Shading-Language-Cookbook-Third-Edition/tree/master/chapter08
 
-I made my shader program unique and special by doing a combination of the bridge scene and the animated wave effect as well as adding scenery to the scene. I added cubes to make them feel like platforms from a level. The animated waves that go over the bridge feel like a tsunami which was the effect I was going for as I wanted to create a scene that a Player might have to jump very high to avoid the water. The bridge was given anti-aliasing shadows and a yellow colour to make it stand out from the scene, and to create the bridge scene that is common in video games such as having water underneath it, but in this case, the water goes above it. 
+I made my shader program unique and special by doing a combination of the bridge scene and the animated wave effect as well as adding scenery to the scene. I added cubes to make them feel like platforms from a level. The animated waves that go under the bridge feel like an actual river which was the effect I was going for. Also, the effect of the vertex animation for the waves had a cartoonish feel to it which is what I also going for. The bridge was given anti-aliasing shadows and a yellow colour to make it stand out from the scene, and to create the bridge scene that is common in video games which the water travelling below it. 
 
-I did not start with a given shader/project. 
 
+## YouTube Link
+https://youtu.be/6Gt8KaMCjHk
 
 
 
