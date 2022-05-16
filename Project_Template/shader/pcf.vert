@@ -14,8 +14,14 @@ uniform mat4 ShadowMatrix;
 
 void main()
 {
+    //multiply the ModelViewMatrix by the vertexPosition's Position
     Position = (ModelViewMatrix * vec4(VertexPosition,1.0)).xyz;
+
+    //normalize the result of NormalMatrix * VertexNormal
     Normal = normalize( NormalMatrix * VertexNormal );
+
+    //multiply ShadowMatrix by the VertexPosition
     ShadowCoord = ShadowMatrix * vec4(VertexPosition,1.0);
+
     gl_Position = MVP * vec4(VertexPosition,1.0);
 }

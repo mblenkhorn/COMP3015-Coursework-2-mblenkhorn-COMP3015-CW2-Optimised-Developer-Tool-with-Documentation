@@ -22,17 +22,29 @@ uniform float Time; //the Time variable for the vertices on the water_wave verte
 layout ( location = 0 ) out vec4 FragColor;
 
 
+
 vec3 phongModel(vec3 kd) {
     vec3 n = Normal;
-    vec3 s = normalize(Light.Position.xyz - Position.xyz);
+
+    vec3 lightVector = Light.Position.xyz - Position.xyz;
+
+    vec3 s = normalize(lightVector);
     vec3 v = normalize(-Position.xyz);
     vec3 r = reflect( -s, n );
+
     float sDotN = max( dot(s,n), 0.0 );
-    vec3 diffuse = Light.Intensity * kd * sDotN;
+
+    vec3 diffuseCalculation = Light.Intensity * kd * sDotN;
+
+    vec3 diffuse = diffuseCalculation;
+
     vec3 spec = vec3(0.0);
-    if( sDotN > 0.0 )
-        spec = Light.Intensity * Material.Ks *
+
+    vec3 specCalculation = Light.Intensity * Material.Ks *
             pow( max( dot(r,v), 0.0 ), Material.Shininess );
+
+    if( sDotN > 0.0 )
+        spec = specCalculation;
 
     return Material.Ka * Light.Intensity + diffuse + spec;
 }
