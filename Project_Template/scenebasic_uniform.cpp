@@ -26,12 +26,8 @@ SceneBasic_Uniform::SceneBasic_Uniform() : tPrev(0), shadowMapWidth(512), shadow
 
 void SceneBasic_Uniform::initScene(int index)
 {
-    
       compile();
-      glEnable(GL_DEPTH_TEST);
       intializeScene();
-    
-    
 }
 
 void SceneBasic_Uniform::compile()
@@ -68,40 +64,8 @@ void SceneBasic_Uniform::update( float t )
     if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
-void SceneBasic_Uniform::render(int index)
+void SceneBasic_Uniform::renderCubes() 
 {
-    prog.use();
-
-    // Pass 1 (shadow map generation)
-    view = lightFrustum.getViewMatrix();
-    projection = lightFrustum.getProjectionMatrix();
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, shadowMapWidth, shadowMapHeight);
-    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &passOneIndex);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(2.5f, 10.0f);
-    drawBuildingScene();
-    glCullFace(GL_BACK);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glFlush();
-
-    // Pass 2 (render)
-    vec3 cameraPos(1.8f * cos(angle), 0.7f, 1.8f * sin(angle));
-    view = glm::lookAt(cameraPos, vec3(0.0f, -0.175f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-
-    prog.setUniform("Light.Position", view * vec4(lightFrustum.getOrigin(), 1.0));
-    projection = glm::perspective(glm::radians(50.0f), (float)width / height, 0.1f, 100.0f);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, width, height);
-    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &passTwoIndex);
-    drawBuildingScene();
-    glFinish();
-
     prog.setUniform("Material.Ka", 0.0f, 0.0f, 1.0f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
     prog.setUniform("Material.Shininess", 1.0f);
@@ -143,6 +107,48 @@ void SceneBasic_Uniform::render(int index)
     model = glm::translate(mat4(1.0f), vec3(0.5f, 0.0f, 0.1f));
     setShadowMatrices();
     cube.render();
+}
+
+void SceneBasic_Uniform::GenerateShadowMap() 
+{
+    //Generate the Shadow Map
+    view = lightFrustum.getViewMatrix();  //get the frustum view matrix
+    projection = lightFrustum.getProjectionMatrix(); //get the frustum projection matrix
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO); //bind the shadow's FBO 
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &passOneIndex); //get the subroutine called passOneIndex
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(2.5f, 10.0f);
+    drawBuildingScene();
+    glCullFace(GL_BACK);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glFlush();
+}
+
+void SceneBasic_Uniform::render(int index)
+{
+    prog.use();
+
+    GenerateShadowMap();
+
+    //Render the Shadow Map 
+    vec3 cameraPos(1.8f * cos(angle), 0.7f, 1.8f * sin(angle));
+    view = glm::lookAt(cameraPos, vec3(0.0f, -0.175f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+    prog.setUniform("Light.Position", view * vec4(lightFrustum.getOrigin(), 1.0));
+    projection = glm::perspective(glm::radians(50.0f), (float)width / height, 0.1f, 100.0f);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, width, height);
+    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &passTwoIndex);
+    drawBuildingScene();
+    glFinish();
+
+    renderCubes();
 
     solidProg.use();
     solidProg.setUniform("frustumColour", vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -175,20 +181,28 @@ void SceneBasic_Uniform::intializeScene()
     // Set up the framebuffer object
     setFBO();
 
-    GLuint programHandle = prog.getHandle();
-    passOneIndex = glGetSubroutineIndex(programHandle, GL_FRAGMENT_SHADER, "recordDepth");
+    GLuint programHandle = prog.getHandle(); //get the shader program's handle
+
+    //get the shadow shader's subroutines
+    passOneIndex = glGetSubroutineIndex(programHandle, GL_FRAGMENT_SHADER, "recordDepth"); 
     passTwoIndex = glGetSubroutineIndex(programHandle, GL_FRAGMENT_SHADER, "shadeWithShadow");
 
+    //create a vec4 called shadowScale which is the shadow map
     shadowScale = mat4(vec4(0.5f, 0.0f, 0.0f, 0.0f),
         vec4(0.0f, 0.5f, 0.0f, 0.0f),
         vec4(0.0f, 0.0f, 0.5f, 0.0f),
         vec4(0.5f, 0.5f, 0.5f, 1.0f)
     );
 
-    lightPos = vec3(-2.5f, 2.0f, -2.5f);  // World coords
+    lightPos = vec3(-2.5f, 2.0f, -2.5f); 
+
+    //world coordinates
     lightFrustum.orient(lightPos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+    //perspective coordinates
     lightFrustum.setPerspective(40.0f, 1.0f, 0.1f, 100.0f);
 
+    //mutliplies the shadowScale by the projection matrix multiplied by the view matrix
     lightPV = shadowScale * lightFrustum.getProjectionMatrix() * lightFrustum.getViewMatrix();
 
     prog.setUniform("Light.Intensity", vec3(0.85f));
@@ -198,9 +212,11 @@ void SceneBasic_Uniform::intializeScene()
 
 void SceneBasic_Uniform::setFBO() 
 {
-    GLfloat border[] = { 1.0f,0.0f,0.0f,0.0f };
-    // The depth buffer texture
+    GLfloat border[] = { 1.0f,0.0f,0.0f,0.0f }; //the border of the shadowMap
+    
+    //creating the buffer texture for the shadows
     GLuint depthTex;
+
     glGenTextures(1, &depthTex);
     glBindTexture(GL_TEXTURE_2D, depthTex);
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT24, shadowMapWidth, shadowMapHeight);
@@ -212,16 +228,17 @@ void SceneBasic_Uniform::setFBO()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
-    // Assign the depth buffer texture to texture channel 0
+    //Assign depth buffer to texture index 0 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, depthTex);
 
-    // Create and set up the FBO
+    //Create the FBO
     glGenFramebuffers(1, &shadowFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
         GL_TEXTURE_2D, depthTex, 0);
 
+    //Draw the buffers
     GLenum drawBuffers[] = { GL_NONE };
     glDrawBuffers(1, drawBuffers);
 
@@ -238,11 +255,13 @@ void SceneBasic_Uniform::setFBO()
 
 void SceneBasic_Uniform::drawBuildingScene()
 {
-    vec3 color = vec3(1.0f, 0.85f, 0.55f);
-    prog.setUniform("Material.Ka", 1.0f, 1.0f, 0.0f);
-    prog.setUniform("Material.Kd", color);
+    vec3 color = vec3(1.0f, 0.85f, 0.55f); //create an arbitrary colour
+    prog.setUniform("Material.Ka", 1.0f, 1.0f, 0.0);
+    prog.setUniform("Material.Kd", color); //assign the arbitrary colour to Material.kd
     prog.setUniform("Material.Ks", vec3(0.0f));
     prog.setUniform("Material.Shininess", 1.0f);
+
+    //render the mesh
     model = mat4(1.0f);
     setShadowMatrices();
     mesh->render();
@@ -283,6 +302,8 @@ void SceneBasic_Uniform::renderWaves()
     waveProg.setUniform("Material.Ks", 0.8f, 0.8f, 0.8f);
     waveProg.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
     waveProg.setUniform("Material.Shininess", 100.0f);
+
+    //render the plane that will be animated with waves
     model = mat4(1.0f);
     model = glm::translate(mat4(1.0f), vec3(0.0f, -1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-10.0f), vec3(0.0f, 0.0f, 1.0f));

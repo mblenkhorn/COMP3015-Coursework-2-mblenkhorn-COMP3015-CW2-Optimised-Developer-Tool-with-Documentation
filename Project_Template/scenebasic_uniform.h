@@ -53,10 +53,14 @@ public:
     void setFBO();
     void drawBuildingScene();
 
+    void GenerateShadowMap();
+
     //Waves
     void drawWaves();
     void setWaveMatrices();
     void renderWaves();
+
+    void renderCubes();
 };
 
 #endif // SCENEBASIC_UNIFORM_H
