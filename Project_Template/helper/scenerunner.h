@@ -71,7 +71,7 @@ public:
 
     int run(Scene & scene) {
         scene.setDimensions(fbw, fbh);
-        scene.initScene();
+        scene.initScene(0);
         scene.resize(fbw, fbh);
 
         // Enter the main loop
@@ -121,24 +121,12 @@ private:
         {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 			
-            if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) 
+            if (glfwGetKey(window, GLFW_KEY_0)) 
             {
                 glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-                scene.render(0);
             }
-            else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) 
-            {
-                glClearColor(0.0f, 1.0f, 1.0f, 0.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-                scene.render(1);
-            }
-            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-            {
-                glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-            }
-
+            
+            scene.render(0);
             scene.update(float(glfwGetTime()));
             glfwSwapBuffers(window);
 

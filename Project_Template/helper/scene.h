@@ -22,7 +22,7 @@ public:
     /**
       Load textures, initialize shaders, etc.
       */
-    virtual void initScene() = 0;
+    virtual void initScene(int index) = 0;
 
     /**
       This is called prior to every frame.  Use this
