@@ -19,7 +19,7 @@ using glm::mat3;
 using glm::mat4;
 using glm::vec4;
 
-SceneBasic_Uniform::SceneBasic_Uniform() : tPrev(0), shadowMapWidth(512), shadowMapHeight(512), plane(20.0f, 20.0f, 1,1), sphere(2.0f, 50, 50), cube(0.2f)
+SceneBasic_Uniform::SceneBasic_Uniform() : tPrev(0), shadowMapWidth(512), shadowMapHeight(512), plane(13.0f, 10.0f, 200, 2), sphere(2.0f, 50, 50), cube(0.2f)
 {
     mesh = ObjMesh::load("media/models/building.obj");
 }
@@ -28,6 +28,7 @@ void SceneBasic_Uniform::initScene(int index)
 {
     
       compile();
+      glEnable(GL_DEPTH_TEST);
       intializeScene();
     
     
@@ -45,6 +46,10 @@ void SceneBasic_Uniform::compile()
         solidProg.compileShader("shader/frustrum.frag");
         solidProg.link();
 
+        waveProg.compileShader("shader/water_wave.vert");
+        waveProg.compileShader("shader/water_wave.frag");
+        waveProg.link();
+
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
@@ -53,12 +58,14 @@ void SceneBasic_Uniform::compile()
 
 void SceneBasic_Uniform::update( float t )
 {
-	float deltaT = t - tPrev;
-	if (tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
+    time = t;
 
-	angle += 0.2f * deltaT;
-	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
+    float deltaT = t - tPrev;
+    if (tPrev == 0.0f) deltaT = 0.0f;
+    tPrev = t;
+
+    angle += 0.2f * deltaT;
+    if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneBasic_Uniform::render(int index)
@@ -142,6 +149,10 @@ void SceneBasic_Uniform::render(int index)
     mat4 mv = view * lightFrustum.getInverseViewMatrix();
     solidProg.setUniform("frustumMVP", projection * mv);
     lightFrustum.render();
+
+    waveProg.use();
+    drawWaves();
+    renderWaves();
 
 
 }
@@ -227,7 +238,6 @@ void SceneBasic_Uniform::setFBO()
 
 void SceneBasic_Uniform::drawBuildingScene()
 {
-
     vec3 color = vec3(1.0f, 0.85f, 0.55f);
     prog.setUniform("Material.Ka", 1.0f, 1.0f, 0.0f);
     prog.setUniform("Material.Kd", color);
@@ -236,15 +246,6 @@ void SceneBasic_Uniform::drawBuildingScene()
     model = mat4(1.0f);
     setShadowMatrices();
     mesh->render();
-
-    prog.setUniform("Material.Ka", 1.0f, 0.0f, 0.0f);
-    //prog.setUniform("Material.Kd", 0.25f, 0.25f, 0.25f);
-    prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
-    //prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
-    prog.setUniform("Material.Shininess", 1.0f);
-    model = mat4(1.0f);
-    setShadowMatrices();
-    plane.render();
 }
 
 
@@ -257,3 +258,37 @@ void SceneBasic_Uniform::setShadowMatrices()
     prog.setUniform("MVP", projection * mv);
     prog.setUniform("ShadowMatrix", lightPV * model);
 }
+
+void SceneBasic_Uniform::setWaveMatrices() 
+{
+    mat4 mv = view * model;
+    waveProg.setUniform("waveModelViewMatrix", mv);
+    waveProg.setUniform("waveNormalMatrix",
+        glm::mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2])));
+    waveProg.setUniform("waveMVP", projection * mv);
+}
+
+void SceneBasic_Uniform::drawWaves() 
+{
+    waveProg.use();
+    waveProg.setUniform("Light.Intensity", vec3(1.0f, 1.0f, 1.0f));
+}
+
+void SceneBasic_Uniform::renderWaves()
+{
+    waveProg.use();
+    waveProg.setUniform("Time", time);
+
+    prog.setUniform("Material.Kd", 0.0f, 0.0f, 1.0f);
+    prog.setUniform("Material.Ks", 0.8f, 0.8f, 0.8f);
+    prog.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+    prog.setUniform("Material.Shininess", 100.0f);
+    model = mat4(1.0f);
+    model = glm::translate(mat4(1.0f), vec3(0.0f, -1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-10.0f), vec3(0.0f, 0.0f, 1.0f));
+    setWaveMatrices();
+    plane.render();
+}
+
+
+
